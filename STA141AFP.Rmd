@@ -166,6 +166,39 @@ ggplot(correlation_data, aes(x = Statistic, y = Correlation)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   labs(x = "Player Statistic", y = "Correlation with Win Percentage", title = "Correlation between Player Statistics and Win Percentage")
 
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Read the datasets
+nba_salaries <- read.csv("nba_salaries.csv")
+nba_wl <- read.csv("NBAWL.csv")
+
+# Merge the datasets on the Team column
+merged_nba <- full_join(nba_salaries, nba_wl, by = "Team")
+
+# Print the first few rows to check the merge
+print(head(merged_nba))
+
+# Clean the data by removing rows with missing values
+cleaned_nba <- merged_nba %>% 
+  filter(!is.na(Salary) & !is.na(WinPercentage))
+
+# Calculate correlation between individual salary and team win percentage
+correlation <- cor(cleaned_nba$Salary, cleaned_nba$WinPercentage)
+
+# Print the correlation
+print(paste("Correlation between individual salary and team win percentage:", correlation))
+
+# Plot the relationship between individual salary and team win percentage
+ggplot(cleaned_nba, aes(x = Salary, y = WinPercentage)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Correlation between Individual Salary and Team Win Percentage",
+       x = "Individual Salary",
+       y = "Win Percentage") +
+  theme_minimal()
+
 ```
 
 
